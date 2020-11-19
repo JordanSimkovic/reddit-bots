@@ -102,7 +102,12 @@ print(Reddit.user.me())
 
 print(Tweets_df1["tweet"])
 
+newwest_tweet_time = Tweets_df1["created_at"][0]
+
 def streamer(Tweets_df, reddit):
+
+    global newwest_tweet_time
+
     while(True):
         #twint.token = token.Token(config)
         #twint.token.refresh()
@@ -131,7 +136,10 @@ def streamer(Tweets_df, reddit):
                 video_bool = bool(Tweets_df["video"][i])
                 pod_bool = any("apple.co" in url for url in Tweets_df["urls"][i])
 
-                if picture_bool == video_bool and not pod_bool:
+                if picture_bool == video_bool and not pod_bool and ((Tweets_df["created_at"][list(Tweets_df["tweet"]).index(new_tweet)] - newwest_tweet_time) > 0):
+                    newwest_tweet_time = Tweets_df["created_at"][list(Tweets_df["tweet"]).index(new_tweet)]
+
+
                     subreddit = set()
 
                     subreddit.add("nba")
@@ -178,10 +186,11 @@ def streamer(Tweets_df, reddit):
                     print(colored(str(datetime.datetime.now()) + " " + "Caught video or podcast! The text was: "
                                   + new_tweet, "red"))
         else:
-            print(colored(str(datetime.datetime.now()) + " " + "No new tweets. Sleeping for 5 seconds", "magenta"))
-            time.sleep(5)
+            print(colored(str(datetime.datetime.now()) + " " + "No new tweets. Sleeping for 15 seconds", "magenta"))
+            time.sleep(15)
             continue
 
+        #dict_Tweets_df = dict(Tweets_df)
         #dict_Tweets_df = dict(Tweets_df)
 
 
